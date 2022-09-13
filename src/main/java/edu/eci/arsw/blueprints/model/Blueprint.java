@@ -41,7 +41,15 @@ public class Blueprint {
     public List<Point> getPoints() {
         return points;
     }
-    
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void addPoint(Point p){
         this.points.add(p);
     }

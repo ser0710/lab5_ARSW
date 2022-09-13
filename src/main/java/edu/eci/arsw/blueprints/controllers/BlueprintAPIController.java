@@ -30,7 +30,7 @@ import javax.websocket.server.PathParam;
  * @author hcadavid
  */
 @RestController
-@RequestMapping(value = "/blueprint")
+@RequestMapping(value = "/blueprints")
 
 public class BlueprintAPIController {
 
@@ -51,16 +51,24 @@ public class BlueprintAPIController {
 
     @RequestMapping(path = "/{author}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getBlueprintByAuthor(@PathVariable String author) throws BlueprintNotFoundException {
-        Set<Blueprint> data  = bps.getBlueprintsByAuthor(author);
+        Set<Blueprint> data = bps.getBlueprintsByAuthor(author);
         Gson gson = new Gson();
+        if(data.isEmpty()){
+            return new ResponseEntity<>("Dicho autor no existe",HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(gson.toJson(data), HttpStatus.ACCEPTED);
+
+
     }
 
     @RequestMapping(path = "/{author}/{bpname}" , method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getBlueprintByAuthorName(@PathVariable String author, @PathVariable String bpname) throws BlueprintNotFoundException {
-        Blueprint blueprint = bps.getBlueprint(author,bpname);
-        Gson gson = new Gson();
-        return new ResponseEntity<>(gson.toJson(blueprint), HttpStatus.ACCEPTED);
+            Blueprint blueprint = bps.getBlueprint(author, bpname);
+            Gson gson = new Gson();
+            if(blueprint == null){
+                return new ResponseEntity<>("Dicho nombre o autor no existe",HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(gson.toJson(blueprint), HttpStatus.ACCEPTED);
 
     }
 
@@ -78,7 +86,11 @@ public class BlueprintAPIController {
     }
 
     @RequestMapping(path = "/{author}/{bpname}", method = RequestMethod.PUT,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> putBlueprint(@PathVariable String author, @PathVariable String bpname){
+    public ResponseEntity<?> putBlueprint(@PathVariable String author, @PathVariable String bpname, @RequestBody Blueprint blueprint) throws BlueprintNotFoundException {
+        Blueprint blueprint1 = bps.getBlueprint(author, bpname);
+        blueprint1.setAuthor(blueprint.getAuthor());
+        blueprint1.setName(blueprint.getName());
+        blueprint1.setPoints(blueprint.getPoints());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

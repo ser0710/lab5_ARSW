@@ -1,0 +1,14 @@
+¿Qué condiciones de carrera se podrían presentar?
+RTA: Existirian 2 momentos en las cuales se podria visualizar esta situacion, al momento en que se realice una
+peticion POST y una GET al mismo tiempo ya que podria darse el caso en que se ejecute un GET y el POST no 
+haya terminado de agregar un nuevo elemento.
+El otro caso muy similiar seria con una de PUT y GET ya que podria darse el caso en que se haga el GET primero
+y no se visualicen los cambios realizados por el PUT.
+
+¿Cuales son las respectivas regiones criticas?
+Los metodos desarrollados de POST, PUT, GET ya que estos acceden a la clase de blueprintServices ya que esta es
+resposable de manejar las solicitudes realizadas.
+
+Para solucionar esto basta con cambiar el hashSet presente en la clase InMemoryBlueprintPersistence por uno de 
+caracter atomico, un ConcurrentHashMap.
+
